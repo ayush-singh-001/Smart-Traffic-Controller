@@ -1,0 +1,31 @@
+# Instruction Trace - Smart Traffic Controller
+# Format: PC | Instruction | Operation Description
+
+0x0000 | addi x10, x0, 0x1000 | Initialize NS sensor address
+0x0004 | addi x11, x0, 0x1004 | Initialize EW sensor address
+0x0008 | addi x12, x0, 0x1008 | Initialize emergency address
+0x000C | addi x13, x0, 0x2000 | Initialize light control address
+0x0010 | addi x14, x0, 0x3000 | Initialize log base address
+0x0014 | addi x15, x0, 0      | Initialize log counter
+
+# Control Loop - Iteration 1 (NS=5, EW=3, Emergency=0)
+0x0018 | lw x1, 0(x10)        | Load NS count = 5 (MEMORY READ)
+0x001C | lw x2, 0(x11)        | Load EW count = 3 (MEMORY READ)
+0x0020 | lw x3, 0(x12)        | Load emergency = 0 (MEMORY READ)
+0x0024 | addi x4, x0, 1       | Set comparison value = 1
+0x0028 | beq x3, x4, 0x0050   | Branch NOT taken (0 ≠ 1)
+0x002C | blt x1, x2, 0x0040   | Branch NOT taken (5 > 3), NS priority
+0x0030 | jal x0, 0x0038       | Jump to ns_priority
+
+# NS Priority Path
+0x0038 | addi x5, x0, 0x02    | Set lights NS=GREEN, EW=RED
+0x003C | sw x5, 0(x13)        | Write to light control (MEMORY WRITE)
+0x0040 | jal x0, 0x0058       | Jump to log_data
+
+# Log Data
+0x0058 | sw x1, 0(x14)        | Store NS count (MEMORY WRITE)
+0x005C | sw x2, 4(x14)        | Store EW count (MEMORY WRITE)
+0x0060 | sw x5, 8(x14)        | Store light state (MEMORY WRITE)
+0x0064 | addi x14, x14, 12    | Update log pointer
+0x0068 | addi x15, x15, 1     | Increment log counter
+0x006C | jal x0, 0x0018       | Jump back to control_loop

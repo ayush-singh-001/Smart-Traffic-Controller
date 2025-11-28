@@ -1,0 +1,25 @@
+{
+  "L1_cache": {
+    "size_kb": 16,
+    "block_size_bytes": 64,
+    "associativity": 2,
+    "replacement_policy": "LRU",
+    "write_policy": "write-back"
+  },
+  "L2_cache": {
+    "size_kb": 128,
+    "block_size_bytes": 64,
+    "associativity": 4,
+    "replacement_policy": "LRU",
+    "write_policy": "write-back"
+  },
+  "memory": {
+    "access_time_cycles": 100
+  },
+  "timing": {
+    "L1_hit_time": 1,
+    "L2_hit_time": 10,
+    "L1_miss_penalty": 10,
+    "L2_miss_penalty": 100
+  }
+}
